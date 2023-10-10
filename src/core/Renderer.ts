@@ -112,6 +112,7 @@ export default defineComponent({
     xr: Boolean,
     props: { type: Object, default: () => ({}) },
     onReady: Function as PropType<(r: RendererInterface) => void>,
+    outerCanvas: { type: Object as PropType<HTMLCanvasElement>, default: null },
   },
   inheritAttrs: false,
   setup(props, { attrs }): RendererSetupInterface {
@@ -120,16 +121,20 @@ export default defineComponent({
     const beforeRenderCallbacks: RenderCallbackType[] = []
     const afterRenderCallbacks: RenderCallbackType[] = []
     const resizeCallbacks: ResizeCallbackType[] = []
-
-    const canvas = document.createElement('canvas')
-    Object.entries(attrs).forEach(([key, value]) => {
-      const matches = key.match(/^on([A-Z][a-zA-Z]*)$/)
-      if (matches) {
-        canvas.addEventListener(matches[1].toLowerCase(), value as {(): void })
-      } else {
-        canvas.setAttribute(key, value as string)
-      }
-    })
+    let canvas: HTMLCanvasElement
+    if (props.outerCanvas) {
+      canvas = props.outerCanvas
+    } else {
+      canvas = document.createElement('canvas')
+      Object.entries(attrs).forEach(([key, value]) => {
+        const matches = key.match(/^on([A-Z][a-zA-Z]*)$/)
+        if (matches) {
+          canvas.addEventListener(matches[1].toLowerCase(), value as {(): void })
+        } else {
+          canvas.setAttribute(key, value as string)
+        }
+      })
+    }
 
     const config: ThreeConfigInterface = {
       canvas,
@@ -188,8 +193,10 @@ export default defineComponent({
     }
   },
   mounted() {
-    // appendChild won't work on reload
-    this.$el.parentNode.insertBefore(this.canvas, this.$el)
+    if (!this.outerCanvas) {
+      // appendChild won't work on reload
+      this.$el.parentNode.insertBefore(this.canvas, this.$el)
+    }
 
     if (this.three.init()) {
       if (this.three.pointer) {
