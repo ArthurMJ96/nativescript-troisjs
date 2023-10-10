@@ -1,5 +1,5 @@
 {
-  "name": "troisjs",
+  "name": "nativescript-troisjs",
   "version": "0.3.4",
   "scripts": {
     "dev": "vite",
@@ -8,6 +8,10 @@
     "rollup": "tsc && rollup -c"
   },
   "devDependencies": {
+    "@nativescript-use/vue": "^0.0.20",
+    "@nativescript/core": "8.5.9",
+    "@nativescript/canvas": "2.0.0-alpha.20",
+    "@nativescript/canvas-polyfill": "2.0.0-alpha.20",
     "@rollup/plugin-replace": "^3.0.0",
     "@types/three": "^0.138.0",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -24,6 +28,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "gsap": "^3.5.1",
+    "nativescript-vue": "3.0.0-beta.10",
     "rollup-plugin-dts": "^4.0.0",
     "rollup-plugin-esbuild": "^4.1.0",
     "stats.js": "0.17.0",
@@ -39,18 +44,19 @@
   "types": "build/trois.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/troisjs/trois.git"
+    "url": "git+https://github.com/ArthurMJ96/trois.git"
   },
   "keywords": [
     "threejs",
     "vuejs",
     "webgl",
-    "vitejs"
+    "nativescript",
+    "vue3"
   ],
   "author": "Kevin Levron",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/troisjs/trois/issues"
+    "url": "https://github.com/ArthurMJ96/trois/issues"
   },
-  "homepage": "https://github.com/troisjs/trois"
+  "homepage": "https://github.com/ArthurMJ96/trois"
 }

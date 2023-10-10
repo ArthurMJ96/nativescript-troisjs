@@ -1,20 +1,121 @@
-# ✨ ThreeJS + VueJS 3 + ViteJS ⚡
+# ✨ TroisJS + NativeScript-Vue3 ⚡
+
+I wanted to something similar to *react-three-fiber* but for Nativescript + VueJS.
+
+So I found TroisJS and adapted it.
+
++ Changed Renderer Component to allow passing in custom Canvas instance.
++ Added NsRenderer Component to 
+   + properly wait for the Canvas to be loaded
+   + pass loaded canvas into Renderer
+   + apply width, height & scaling via wrapper ContentView
+
++ Changed Renderer's onMounted, onBeforeRender, onAfterRender & onResize callbacks to be register directly as props
+    > Ex: <NsRenderer @before-render="fn" />
+
+<hr>
+
 [![NPM Package][npm]][npm-url]
-[![Build Size][build-size]][build-size-url]
 [![NPM Downloads][npm-downloads]][npmtrends-url]
-[![Twitter][email]][email-url]
-[![Twitter][twitter]][twitter-url]
 
 [npm]: https://img.shields.io/npm/v/troisjs
 [npm-url]: https://www.npmjs.com/package/troisjs
-[build-size]: https://badgen.net/bundlephobia/minzip/troisjs
-[build-size-url]: https://bundlephobia.com/result?p=troisjs
 [npm-downloads]: https://img.shields.io/npm/dw/troisjs
 [npmtrends-url]: https://www.npmtrends.com/troisjs
-[twitter]: https://img.shields.io/twitter/follow/soju22?label=&style=social
-[twitter-url]: https://twitter.com/soju22
-[email]: https://img.shields.io/badge/hire-%20ThreeJS%20Expert-brightgreen
-[email-url]: mailto:kevin.levron@gmail.com
+
+## Usage (NativeScript-Vue3)
+
+### Install
+
+```bash
+npm i three @nativescript/canvas @nativescript/canvas-polyfill @Soon™/nativescript-troisjs
+```
+
+#### Register canvas element & apply polyfill
+
+```js
+// app.ts|js
+
+import '@nativescript/canvas-polyfill'
+registerElement('canvas', () => require('@nativescript/canvas').Canvas)
+
+// ...
+
+```
+
+
+#### Example usage
+
+Simply use `<NsRenderer>` instead of `<Renderer>`.
+
+```html
+<script lang="ts" setup>
+import { ref } from 'nativescript-vue'
+import chroma from 'chroma-js'
+import {
+  Camera,
+  ToonMaterial,
+  AmbientLight,
+  PointLight,
+  Torus,
+  Scene,
+  NsRenderer,
+  type RenderEventInterface,
+} from 'troisjs'
+
+const n = ref(30)
+const cscale = chroma.scale(['#dd3e1b', '#0b509c'])
+const color = (i: number) => cscale(i / n.value).css()
+const meshRefs = ref<(typeof Torus)[]>([])
+
+// https://troisjs.github.io/examples/loop.html
+const onBeforeRender = (_e: RenderEventInterface) => {
+  const t = Date.now()
+  let mesh, ti
+  for (let i = 1; i <= n.value; i++) {
+    if (meshRefs.value?.[i]?.mesh) {
+      mesh = meshRefs.value[i].mesh
+      ti = t - i * 500
+      mesh.rotation.x = ti * 0.00015
+      mesh.rotation.y = ti * 0.0002
+      mesh.rotation.z = ti * 0.00017
+    }
+  }
+}
+</script>
+
+<template>
+  <GridLayout rows="*" class="bg-base-200">
+    <NsRenderer @before-render="onBeforeRender" alpha>
+      <Camera :position="{ z: 15 }" />
+      <Scene>
+        <AmbientLight color="#808080" />
+        <PointLight color="#ffffff" :position="{ y: 50, z: 0 }" />
+        <PointLight color="#ffffff" :position="{ y: -50, z: 0 }" />
+        <PointLight color="#ffffff" :position="{ y: 0, z: 0 }" />
+        <Torus
+          v-for="i in n"
+          :key="i"
+          ref="meshRefs"
+          :radius="i * 0.2"
+          :tube="0.1"
+          :radial-segments="8"
+          :tubular-segments="(i + 2) * 4"
+        >
+          <ToonMaterial :color="color(i)" />
+        </Torus>
+      </Scene>
+    </NsRenderer>
+  </GridLayout>
+</template>
+
+```
+
+Read more on https://troisjs.github.io/guide/
+
+- 💻 Examples (wip) : https://troisjs.github.io/ ([sources](https://github.com/troisjs/troisjs.github.io/tree/master/src/components))
+- 📖 Doc (wip) : https://troisjs.github.io/guide/ ([repo](https://github.com/troisjs/troisjs.github.io))
+- 🚀 Codepen examples : https://codepen.io/collection/AxoWoz
 
 <p style="text-align:center;">
   <a href="https://troisjs-flower.pages.dev"><img src="/screenshots/troisjs_15.jpg" width="24%" /></a>
@@ -31,80 +132,9 @@
   <a href="https://troisjs.github.io/examples/lights.html"><img src="/screenshots/troisjs_9.jpg" width="24%" /></a>
 </p>
 
-- 💻 Examples (wip) : https://troisjs.github.io/ ([sources](https://github.com/troisjs/troisjs.github.io/tree/master/src/components))
-- 📖 Doc (wip) : https://troisjs.github.io/guide/ ([repo](https://github.com/troisjs/troisjs.github.io))
-- 🚀 Codepen examples : https://codepen.io/collection/AxoWoz
 
-I wanted to code something similar to *react-three-fiber* but for VueJS.
+## Issues
 
-I started from scratch, I will rewrite some of my [WebGL demos](https://codepen.io/collection/AGZywR) to see if this little toy can do the job.
+If you encounter any issues, please open a new issue with as much detail as possible. This is **beta** software, so there might be bugs.
 
-**Feel free to contact me if you need a ThreeJS developer ^^**
-
-*Trois* is a french word, it means *Three*.
-
-## Sponsors (Thanks 💙 !!!)
-
-<a href="https://github.com/avaer">
-  <img src="https://github.com/avaer.png" width="50px" />
-</a>
-<a href="https://github.com/designori-llc">
-  <img src="https://github.com/designori-llc.png" width="50px" />
-</a>
-<a href="https://github.com/michelwaechter">
-  <img src="https://github.com/michelwaechter.png" width="50px" />
-</a>
-<a href="https://github.com/okydk">
-  <img src="https://github.com/okydk.png" width="50px" />
-</a>
-
-## Contributors (Thanks 💙 !!!)
-
-<a href="https://github.com/klevron">
-  <img src="https://github.com/klevron.png" width="50px" />
-</a>
-<a href="https://github.com/SaFrMo">
-  <img src="https://github.com/SaFrMo.png" width="50px" />
-</a>
-<a href="https://github.com/yoanngueny">
-  <img src="https://github.com/yoanngueny.png" width="50px" />
-</a>
-<a href="https://github.com/xcchcaptain">
-  <img src="https://github.com/xcchcaptain.png" width="50px" />
-</a>
-<a href="https://github.com/oneWaveAdrian">
-  <img src="https://github.com/oneWaveAdrian.png" width="50px" />
-</a>
-
-## Usage (CDN)
-
-TroisJS is really simple and easy to use :
-
-```html
-<div id="app">
-  <renderer ref="renderer" antialias orbit-ctrl resize="window">
-    <camera :position="{ z: 10 }"></camera>
-    <scene>
-      <point-light :position="{ y: 50, z: 50 }"></point-light>
-      <box ref="box" :rotation="{ y: Math.PI / 4, z: Math.PI / 4 }">
-        <lambert-material></lambert-material>
-      </box>
-    </scene>
-  </renderer>
-</div>
-
-<script type="module">
-  import { createApp } from 'https://unpkg.com/troisjs@0.3.2/build/trois.module.cdn.min.js';
-  createApp({
-    mounted() {
-      const renderer = this.$refs.renderer;
-      const box = this.$refs.box.mesh;
-      renderer.onBeforeRender(() => {
-        box.rotation.x += 0.01;
-      });
-    }
-  }).mount('#app');
-</script>
-```
-
-Read more on https://troisjs.github.io/guide/
+- [Join Discord](https://nativescript.org/discord)
