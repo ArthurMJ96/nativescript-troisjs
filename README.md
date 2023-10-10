@@ -1,11 +1,11 @@
 # ✨ TroisJS + NativeScript-Vue3 ⚡
 
-I wanted to something similar to *react-three-fiber* but for Nativescript + VueJS.
+I wanted something similar to *react-three-fiber* but for Nativescript + VueJS.
 
 So I found TroisJS and adapted it.
 
 + Changed Renderer Component to allow passing in custom Canvas instance.
-+ Added NsRenderer Component to 
++ Added `<NsRenderer>` Component to 
    + properly wait for the Canvas to be loaded
    + pass loaded canvas into Renderer
    + apply width, height & scaling via wrapper ContentView
