@@ -9,9 +9,10 @@
   },
   "devDependencies": {
     "@nativescript-use/vue": "^0.0.20",
-    "@nativescript/core": "8.5.9",
     "@nativescript/canvas": "2.0.0-alpha.20",
     "@nativescript/canvas-polyfill": "2.0.0-alpha.20",
+    "@nativescript/core": "8.5.9",
+    "@nativescript/types": "^8.6.1",
     "@rollup/plugin-replace": "^3.0.0",
     "@types/three": "^0.138.0",
     "@typescript-eslint/eslint-plugin": "^5.2.0",

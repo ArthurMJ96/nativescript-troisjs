@@ -28,7 +28,7 @@ So I found TroisJS and adapted it.
 ### Install
 
 ```bash
-npm i three @nativescript/canvas @nativescript/canvas-polyfill @Soon™/nativescript-troisjs
+npm i three @nativescript/canvas @nativescript/canvas-polyfill nativescript-troisjs
 ```
 
 #### Register canvas element & apply polyfill
