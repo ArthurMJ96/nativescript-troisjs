@@ -19,7 +19,7 @@ import type { Canvas } from "@nativescript/canvas";
 
 type CallbackType<T> = (event: T) => void;
 
-type EventType = 'init' | 'mounted' | 'beforerender' | 'afterrender' | 'resize'
+type EventType = "init" | "mounted" | "beforerender" | "afterrender" | "resize";
 
 export interface EventInterface {
   type: "init" | "mounted";
@@ -161,6 +161,7 @@ export default defineComponent({
     const afterRenderCallbacks: RenderCallbackType[] = [];
     const resizeCallbacks: ResizeCallbackType[] = [];
     let canvas: HTMLCanvasElement;
+
     if (props.outerCanvas) {
       canvas = props.outerCanvas as unknown as HTMLCanvasElement;
     } else {

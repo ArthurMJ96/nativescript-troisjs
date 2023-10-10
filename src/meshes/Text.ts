@@ -68,6 +68,7 @@ export default defineComponent({
         font: this.font,
         size: this.size,
         height: this.height,
+        // @ts-ignore
         depth: this.depth,
         curveSegments: this.curveSegments,
         bevelEnabled: this.bevelEnabled,

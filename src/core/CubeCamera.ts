@@ -35,9 +35,12 @@ export default defineComponent({
     }
 
     if (props.autoUpdate) {
+      // @ts-ignore
       rendererC.onBeforeRender(updateRT)
+      // @ts-ignore
       onUnmounted(() => { rendererC.offBeforeRender(updateRT) })
     } else {
+      // @ts-ignore
       rendererC.onMounted(updateRT)
     }
 
