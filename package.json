@@ -45,7 +45,7 @@
   "types": "build/trois.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArthurMJ96/trois.git"
+    "url": "git+https://github.com/ArthurMJ96/nativescript-troisjs.git"
   },
   "keywords": [
     "threejs",
@@ -57,7 +57,7 @@
   "author": "Kevin Levron",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ArthurMJ96/trois/issues"
+    "url": "https://github.com/ArthurMJ96/nativescript-troisjs/issues"
   },
-  "homepage": "https://github.com/ArthurMJ96/trois"
+  "homepage": "https://github.com/ArthurMJ96/nativescript-troisjs"
 }
