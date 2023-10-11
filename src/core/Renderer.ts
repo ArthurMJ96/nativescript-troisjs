@@ -148,10 +148,23 @@ export default defineComponent({
     onReady: Function as PropType<(r: RendererInterface) => void>,
 
     outerCanvas: { type: Object as PropType<Canvas>, default: null },
-    onMounted: Function as PropType<(r: RendererInterface) => void>,
-    onBeforeRender: Function as PropType<(e: RenderEventInterface) => void>,
-    onAfterRender: Function as PropType<(e: RenderEventInterface) => void>,
-    onResize: Function as PropType<(e: ResizeEventInterface) => void>,
+
+    onMounted: {
+      type: Function as PropType<(r: RendererInterface) => void>,
+      required: false,
+    },
+    onBeforeRender: {
+      type: Function as PropType<(e: RenderEventInterface) => void>,
+      required: false,
+    },
+    onAfterRender: {
+      type: Function as PropType<(e: RenderEventInterface) => void>,
+      required: false,
+    },
+    onResize: {
+      type: Function as PropType<(e: ResizeEventInterface) => void>,
+      required: false,
+    },
   },
   inheritAttrs: false,
   setup(props, { attrs }): RendererSetupInterface {

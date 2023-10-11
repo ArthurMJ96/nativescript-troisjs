@@ -13,6 +13,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "skipLibCheck": true,
     "outDir": "types",
   },
   "include": ["src/**/*.ts", "src/**/*.vue"],
