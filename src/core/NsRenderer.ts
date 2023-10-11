@@ -54,7 +54,7 @@ export default defineComponent(
     const canvasComp = resolveComponent("canvas");
 
     return () => {
-      return h("ContentView", { ref: el, onLoaded, class: "!bg-red-500" }, [
+      return h("ContentView", { ref: el, onLoaded }, [
         appReady.value && h(canvasComp, { onReady: onCanvasReady }),
         canvas.value &&
           appReady.value &&
