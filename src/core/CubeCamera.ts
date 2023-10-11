@@ -35,13 +35,10 @@ export default defineComponent({
     }
 
     if (props.autoUpdate) {
-      // @ts-ignore
-      rendererC.onBeforeRender(updateRT)
-      // @ts-ignore
-      onUnmounted(() => { rendererC.offBeforeRender(updateRT) })
+      rendererC.addListener('beforerender', updateRT)
+      onUnmounted(() => { rendererC.removeListener('beforerender', updateRT) })
     } else {
-      // @ts-ignore
-      rendererC.onMounted(updateRT)
+      rendererC.addListener('mounted', updateRT)
     }
 
     return { cubeRT, cubeCamera, updateRT }

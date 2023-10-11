@@ -64,8 +64,8 @@ export default defineComponent({
       if (this.events.click) domElement.addEventListener('click', this.onClick)
       if (this.events.wheel) domElement.addEventListener('wheel', this.onWheel)
       if (this.events.keyup) document.addEventListener('keyup', this.onKeyup)
-      this.renderer.onBeforeRender(this.updateProgress)
-      this.renderer.onResize(this.onResize)
+      this.renderer.addListener('beforerender', this.updateProgress)
+      this.renderer.addListener('resize', this.onResize)
     },
     initScene() {
       const renderer = this.renderer.renderer

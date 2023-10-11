@@ -36,7 +36,6 @@ export default defineComponent({
     this.composer = composer
     this.renderer.composer = composer
 
-    // this.renderer.onInit(() => {
     renderer.addListener('init', () => {
       renderer.renderer.autoClear = false
       this.resize()

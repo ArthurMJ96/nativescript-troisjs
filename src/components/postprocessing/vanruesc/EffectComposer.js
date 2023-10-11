@@ -22,15 +22,15 @@ export default {
     let passIndex = 0
     const getPassIndex = () => { return passIndex++ }
 
-    renderer.onInit(() => {
+    renderer.addListener('init', () => {
       renderer.renderer.autoClear = false
       renderer.renderFn = render
       setSize()
-      renderer.onResize(setSize)
+      renderer.addListener('resize', setSize)
     })
 
     onUnmounted(() => {
-      renderer.offResize(setSize)
+      renderer.removeListener('resize', setSize)
       composer.dispose()
     })
 

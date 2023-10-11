@@ -112,7 +112,6 @@ export default defineComponent({
         canvas.value &&
           appReady.value &&
           h(
-            // @ts-ignore
             Renderer,
             {
               ref: renderer,

@@ -35,10 +35,10 @@ export default defineComponent({
     })
 
     this.resize()
-    if (this.keepSize) this.renderer.onResize(this.resize)
+    if (this.keepSize) this.renderer.addListener('resize', this.resize)
   },
   unmounted() {
-    this.renderer?.offResize(this.resize)
+    this.renderer?.removeListener('resize', this.resize)
   },
   methods: {
     loadTexture() {

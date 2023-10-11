@@ -30,10 +30,10 @@ export default defineComponent({
     this.tweakMaterial()
 
     this.startTime = Date.now()
-    this.renderer.onBeforeRender(this.updateTime)
+    this.renderer.addListener('beforerender', this.updateTime)
   },
   unmounted() {
-    this.renderer.offBeforeRender(this.updateTime)
+    this.renderer.removeListener('beforerender', this.updateTime)
   },
   methods: {
     tweakMaterial() {

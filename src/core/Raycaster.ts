@@ -32,7 +32,7 @@ export default defineComponent({
     }
     const renderer = this.renderer
 
-    this.renderer.onMounted(() => {
+    this.renderer.addListener('mounted', () => {
       if (!renderer.camera) return
 
       this.pointer = usePointer({
@@ -49,14 +49,14 @@ export default defineComponent({
       this.pointer.addListeners()
 
       if (this.intersectMode === 'frame') {
-        renderer.onBeforeRender(this.pointer.intersect)
+        renderer.addListener('beforerender',this.pointer.intersect)
       }
     })
   },
   unmounted() {
     if (this.pointer) {
       this.pointer.removeListeners()
-      this.renderer?.offBeforeRender(this.pointer.intersect)
+      this.renderer?.removeListener('beforerender', this.pointer.intersect)
     }
   },
   render() {

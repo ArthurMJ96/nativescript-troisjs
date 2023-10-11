@@ -16,9 +16,9 @@ export default defineComponent({
   },
   mounted() {
     this.liquidEffect = new LiquidEffect(this.renderer.renderer)
-    this.renderer.onMounted(() => {
+    this.renderer.addListener('mounted', () => {
       this.liquidEffect.renderer = this.renderer.renderer
-      this.renderer.onBeforeRender(this.update)
+      this.renderer.addListener('beforerender', this.update)
     })
 
     this.material = new MeshStandardMaterial({
@@ -44,7 +44,7 @@ export default defineComponent({
     this.initObject3D(this.mesh)
   },
   unmounted() {
-    this.renderer.offBeforeRender(this.update)
+    this.renderer.removeListener('beforerender', this.update)
   },
   methods: {
     update() {

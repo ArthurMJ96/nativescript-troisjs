@@ -19,10 +19,10 @@ export default defineComponent({
     this.cannon = useCannon({ gravity: this.gravity, broadphase: this.broadphase })
   },
   mounted() {
-    this.renderer.onBeforeRender(this.step)
+    this.renderer.addListener('beforerender', this.step)
   },
   unmounted() {
-    this.renderer.offBeforeRender(this.step)
+    this.renderer.removeListener('beforerender', this.step)
   },
   methods: {
     step() {

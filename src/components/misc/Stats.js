@@ -17,8 +17,8 @@ export default {
   },
   mounted() {
     if (!this.noSetup) {
-      this.renderer.onBeforeRender(this.begin)
-      this.renderer.onAfterRender(this.end)
+      this.renderer.addListener('beforerender', this.begin)
+      this.renderer.addListener('afterrender', this.end)
     }
     this.$emit('created', { stats: this.stats })
   },
@@ -38,8 +38,8 @@ export default {
     if (this.stats && this.stats.dom) {
       this.stats.dom.parentElement.removeChild(this.stats.dom)
     }
-    this.renderer.offBeforeRender(this.begin)
-    this.renderer.offAfterRender(this.end)
+    this.renderer.removeListener('beforerender', this.begin)
+    this.renderer.removeListener('afterrender', this.end)
   },
   render() {
     return this.$slots.default ? this.$slots.default() : []
