@@ -21,7 +21,7 @@ import type { Canvas } from "@nativescript/canvas";
 
 export type TCanvas = Canvas;
 
-export default defineComponent({
+const comp = defineComponent({
   props: {
     params: {
       type: Object as PropType<WebGLRendererParameters>,
@@ -90,8 +90,12 @@ export default defineComponent({
     const sizes = computed(() => {
       const scale = Screen.mainScreen.scale || 1;
       return {
-        width: String(width.value * scale),
-        height: String(height.value * scale),
+        width: width.value * scale,
+        height: height.value * scale,
+        unscaled: {
+          width: width.value,
+          height: height.value,
+        },
       };
     });
 
@@ -103,6 +107,7 @@ export default defineComponent({
     expose({
       canvas,
       renderer,
+      sizes,
     });
     const canvasComp = resolveComponent("canvas");
 
@@ -117,8 +122,8 @@ export default defineComponent({
               ref: renderer,
               ...props,
               outerCanvas: canvas.value,
-              height: sizes.value.height,
-              width: sizes.value.width,
+              height: String(sizes.value.height),
+              width: String(sizes.value.width),
               onReady: (e: RendererInterface) => emit("rendererReady", e),
             },
             slots.default || []
@@ -126,3 +131,13 @@ export default defineComponent({
       ]);
   },
 });
+
+interface ExposedProps {
+  new (): {
+    readonly canvas: TCanvas;
+    readonly renderer: RendererInterface;
+    readonly sizes: { width: number; height: number };
+  };
+};
+
+export default comp as typeof comp & ExposedProps;
