@@ -136,8 +136,15 @@ interface ExposedProps {
   new (): {
     readonly canvas: TCanvas;
     readonly renderer: RendererInterface;
-    readonly sizes: { width: number; height: number };
+    readonly sizes: {
+      width: number;
+      height: number;
+      unscaled: {
+        width: number;
+        height: number;
+      };
+    };
   };
-};
+}
 
 export default comp as typeof comp & ExposedProps;
