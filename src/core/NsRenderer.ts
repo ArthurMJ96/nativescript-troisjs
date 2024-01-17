@@ -7,6 +7,7 @@ import {
   defineComponent,
   resolveComponent,
   PropType,
+  watch,
   h,
 } from "vue";
 import { PointerPublicConfigInterface } from "./usePointer";
@@ -18,6 +19,7 @@ import Renderer, {
 import { Screen } from "@nativescript/core/platform";
 import { useElementSize, ViewRef } from "@nativescript-use/vue";
 import type { Canvas } from "@nativescript/canvas";
+import { cameraSetProp } from "./Camera";
 
 export type TCanvas = Canvas;
 
@@ -42,7 +44,7 @@ const comp = defineComponent({
       default: false,
     },
     resize: {
-      type: [Boolean, String] as PropType<boolean | string>,
+      type: Boolean,
       default: false,
     },
     shadow: Boolean,
@@ -73,6 +75,11 @@ const comp = defineComponent({
   emits: {
     canvasReady: (canvas: TCanvas) => true,
     rendererReady: (renderer: RendererInterface) => true,
+    resize: (event: {
+      renderer: RendererInterface;
+      width: number;
+      height: number;
+    }) => true,
   },
 
   setup(props, { emit, expose, slots }) {
@@ -87,16 +94,19 @@ const comp = defineComponent({
 
     const el = ref<ViewRef>(null!);
     const { width, height } = useElementSize(el);
-    const sizes = computed(() => {
-      const scale = Screen.mainScreen.scale || 1;
-      return {
-        width: width.value * scale,
-        height: height.value * scale,
-        unscaled: {
-          width: width.value,
-          height: height.value,
-        },
-      };
+    watch([width, height], ([nvWidth, nvHeight]) => {
+      if (props.resize && appReady.value && renderer.value) {
+        if (renderer.value?.camera) {
+          cameraSetProp(renderer.value.camera, "aspect", nvWidth / nvHeight);
+        }
+        renderer.value?.renderer?.setSize(nvWidth, nvHeight);
+        renderer.value?.renderer?.setPixelRatio(Screen.mainScreen.scale || 1);
+        emit("resize", {
+          renderer: renderer.value,
+          width: nvWidth,
+          height: nvHeight,
+        });
+      }
     });
 
     const onLoaded = async () => {
@@ -107,9 +117,14 @@ const comp = defineComponent({
     expose({
       canvas,
       renderer,
-      sizes,
+      sizes: computed(() => ({
+        width: width.value,
+        height: height.value,
+      })),
     });
     const canvasComp = resolveComponent("canvas");
+
+    const { resize, ...rendererProps } = props;
 
     return () =>
       h("ContentView", { ref: el, onLoaded }, [
@@ -120,11 +135,13 @@ const comp = defineComponent({
             Renderer,
             {
               ref: renderer,
-              ...props,
+              ...rendererProps,
+
               outerCanvas: canvas.value,
-              height: String(sizes.value.height),
-              width: String(sizes.value.width),
+              height: String(height.value),
+              width: String(width.value),
               onReady: (e: RendererInterface) => emit("rendererReady", e),
+              pixelRatio: Screen.mainScreen.scale || 1,
             },
             slots.default || []
           ),

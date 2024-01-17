@@ -1,6 +1,6 @@
 {
   "name": "nativescript-troisjs",
-  "version": "0.3.14",
+  "version": "0.3.16",
   "scripts": {
     "dev": "vite",
     "types": "tsc",
