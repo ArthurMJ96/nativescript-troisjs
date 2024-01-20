@@ -96,11 +96,7 @@ const comp = defineComponent({
     const { width, height } = useElementSize(el);
     watch([width, height], ([nvWidth, nvHeight]) => {
       if (props.resize && appReady.value && renderer.value) {
-        if (renderer.value?.camera) {
-          cameraSetProp(renderer.value.camera, "aspect", nvWidth / nvHeight);
-        }
-        renderer.value?.renderer?.setSize(nvWidth, nvHeight);
-        renderer.value?.renderer?.setPixelRatio(Screen.mainScreen.scale || 1);
+        renderer.value?.three?.setSize(nvWidth, nvHeight);
         emit("resize", {
           renderer: renderer.value,
           width: nvWidth,
@@ -156,10 +152,6 @@ interface ExposedProps {
     readonly sizes: {
       width: number;
       height: number;
-      unscaled: {
-        width: number;
-        height: number;
-      };
     };
   };
 }
