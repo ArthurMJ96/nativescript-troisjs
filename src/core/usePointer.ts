@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Camera, InstancedMesh, Intersection, Object3D, Vector2, Vector3 } from 'three'
+import type { TapGestureEventData } from "@nativescript/core";
 import useRaycaster from './useRaycaster'
 
 export interface PointerEventInterface {
@@ -96,12 +97,15 @@ export default function usePointer(options: PointerConfigInterface): PointerInte
     positionV3.set(0, 0, 0)
   }
 
-  function updatePosition(event: TouchEvent | MouseEvent) {
+  function updatePosition(event: TouchEvent | MouseEvent | TapGestureEventData) {
     let x, y
     // @ts-ignore
     if (event.touches && event.touches.length > 0) {
       x = (<TouchEvent>event).touches[0].clientX
       y = (<TouchEvent>event).touches[0].clientY
+    } else if ('getX' in event) {
+      x = event.getX();
+      y = event.getY();
     } else {
       x = (<MouseEvent>event).clientX
       y = (<MouseEvent>event).clientY
@@ -229,6 +233,8 @@ export default function usePointer(options: PointerConfigInterface): PointerInte
     domElement.addEventListener('mousemove', pointerMove)
     domElement.addEventListener('mouseleave', pointerLeave)
     domElement.addEventListener('click', pointerClick)
+    // @ts-ignore
+    domElement.addEventListener('tap', pointerClick)
     if (touch) {
       domElement.addEventListener('touchstart', pointerEnter)
       domElement.addEventListener('touchmove', pointerMove)
@@ -242,6 +248,8 @@ export default function usePointer(options: PointerConfigInterface): PointerInte
     domElement.removeEventListener('mousemove', pointerMove)
     domElement.removeEventListener('mouseleave', pointerLeave)
     domElement.removeEventListener('click', pointerClick)
+    // @ts-ignore
+    domElement.removeEventListener('tap', pointerClick)
 
     domElement.removeEventListener('touchstart', pointerEnter)
     domElement.removeEventListener('touchmove', pointerMove)

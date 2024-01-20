@@ -1,6 +1,6 @@
 {
   "name": "nativescript-troisjs",
-  "version": "0.3.16",
+  "version": "0.3.17",
   "scripts": {
     "dev": "vite",
     "types": "tsc",
@@ -9,8 +9,8 @@
   },
   "devDependencies": {
     "@nativescript-use/vue": "^0.0.20",
-    "@nativescript/canvas": "2.0.0-alpha.20",
-    "@nativescript/canvas-polyfill": "2.0.0-alpha.20",
+    "@nativescript/canvas": "2.0.0-alpha.48",
+    "@nativescript/canvas-polyfill": "2.0.0-alpha.48",
     "@nativescript/core": "8.5.9",
     "@nativescript/types": "^8.6.1",
     "@rollup/plugin-replace": "^3.0.0",
