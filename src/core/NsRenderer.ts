@@ -4,6 +4,7 @@ import {
   shallowRef,
   computed,
   nextTick,
+  watchEffect,
   defineComponent,
   resolveComponent,
   PropType,
@@ -19,7 +20,6 @@ import Renderer, {
 import { Screen } from "@nativescript/core/platform";
 import { useElementSize, ViewRef } from "@nativescript-use/vue";
 import type { Canvas } from "@nativescript/canvas";
-import { cameraSetProp } from "./Camera";
 
 export type TCanvas = Canvas;
 
@@ -70,6 +70,16 @@ const comp = defineComponent({
       type: Function as PropType<(e: ResizeEventInterface) => void>,
       required: false,
     },
+
+    /**
+     * A number between 0 and 1 to scale the canvas resolution.
+     * This is useful for performance optimization on high resolution screens.
+     * @example 0.5 will render the canvas at half the resolution of the original size.
+     */
+    resolutionScale: {
+      type: Number,
+      default: 1,
+    },
   },
 
   emits: {
@@ -84,46 +94,66 @@ const comp = defineComponent({
 
   setup(props, { emit, expose, slots }) {
     const appReady = ref(false);
+    const wrapper = ref<ViewRef>(null!);
     const canvas = shallowRef<TCanvas>(null!);
     const renderer = ref<RendererInterface>(null!);
+    const { width, height } = useElementSize(wrapper);
+    const sizes = computed(() => ({
+      width: width.value * Screen.mainScreen.scale,
+      height: height.value * Screen.mainScreen.scale,
+      unscaled: {
+        width: width.value,
+        height: height.value,
+      },
+    }));
 
-    const onCanvasReady = (args: { object: TCanvas }) => {
+    function onCanvasReady(args: { object: TCanvas }) {
       canvas.value = args.object;
       emit("canvasReady", args.object);
-    };
+    }
 
-    const el = ref<ViewRef>(null!);
-    const { width, height } = useElementSize(el);
-    watch([width, height], ([nvWidth, nvHeight]) => {
+    function updateScale() {
+      const renderScale = Math.min(Math.max(props.resolutionScale, 0), 1);
+      const matrixScale = 1 / renderScale;
+      if (matrixScale >= 1) {
+        canvas.value?.nativeView?.setScaleX(matrixScale);
+        canvas.value?.nativeView?.setScaleY(matrixScale);
+      }
+      const { width, height } = sizes.value;
+      renderer.value?.three?.setSize(width * renderScale, height * renderScale);
+    }
+
+    // Handle resolutionScale
+    watchEffect(updateScale);
+
+    // Handle resize
+    watch([width, height], () => {
       if (props.resize && appReady.value && renderer.value) {
-        renderer.value?.three?.setSize(nvWidth, nvHeight);
+        updateScale();
         emit("resize", {
           renderer: renderer.value,
-          width: nvWidth,
-          height: nvHeight,
+          ...sizes.value,
         });
       }
     });
 
-    const onLoaded = async () => {
-      await nextTick();
-      appReady.value = true;
-    };
+    function onLoaded() {
+      nextTick(() => {
+        appReady.value = true;
+      });
+    }
 
     expose({
       canvas,
       renderer,
-      sizes: computed(() => ({
-        width: width.value,
-        height: height.value,
-      })),
+      sizes,
     });
     const canvasComp = resolveComponent("canvas");
 
     const { resize, ...rendererProps } = props;
 
     return () =>
-      h("ContentView", { ref: el, onLoaded }, [
+      h("ContentView", { ref: wrapper, onLoaded }, [
         appReady.value && h(canvasComp, { onReady: onCanvasReady }),
         canvas.value &&
           appReady.value &&
@@ -134,10 +164,9 @@ const comp = defineComponent({
               ...rendererProps,
 
               outerCanvas: canvas.value,
-              height: String(height.value),
-              width: String(width.value),
+              height: String(sizes.value.height),
+              width: String(sizes.value.width),
               onReady: (e: RendererInterface) => emit("rendererReady", e),
-              pixelRatio: Screen.mainScreen.scale || 1,
             },
             slots.default || []
           ),
@@ -152,6 +181,10 @@ interface ExposedProps {
     readonly sizes: {
       width: number;
       height: number;
+      unscaled: {
+        width: number;
+        height: number;
+      };
     };
   };
 }
