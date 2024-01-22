@@ -9,19 +9,22 @@ So I found TroisJS and adapted it.
    + properly wait for the Canvas to be loaded
    + pass loaded canvas into Renderer
    + apply width, height & scaling via wrapper ContentView
+   + add resolution-scale prop to optionally lower the rendered resolution for higher FPS (Ex: for Android TV)
+   + adapt resize prop to work on orientation change
 
 + Changed Renderer's onMounted, onBeforeRender, onAfterRender & onResize callbacks to be register directly as props
     > Ex: <NsRenderer @before-render="fn" />
-
++ Added `useGameLoop` composable.
++ & more.
 <hr>
 
 [![NPM Package][npm]][npm-url]
 [![NPM Downloads][npm-downloads]][npmtrends-url]
 
-[npm]: https://img.shields.io/npm/v/troisjs
-[npm-url]: https://www.npmjs.com/package/troisjs
-[npm-downloads]: https://img.shields.io/npm/dw/troisjs
-[npmtrends-url]: https://www.npmtrends.com/troisjs
+[npm]: https://img.shields.io/npm/v/nativescript-troisjs
+[npm-url]: https://www.npmjs.com/package/nativescript-troisjs
+[npm-downloads]: https://img.shields.io/npm/dw/nativescript-troisjs
+[npmtrends-url]: https://www.npmtrends.com/nativescript-troisjs
 
 ## Usage (NativeScript-Vue3)
 
@@ -60,33 +63,37 @@ import {
   Torus,
   Scene,
   NsRenderer,
-  type RenderEventInterface,
-} from 'troisjs'
+  useGameLoop,
+} from 'nativescript-troisjs'
 
 const n = ref(30)
 const cscale = chroma.scale(['#dd3e1b', '#0b509c'])
 const color = (i: number) => cscale(i / n.value).css()
 const meshRefs = ref<(typeof Torus)[]>([])
 
-// https://troisjs.github.io/examples/loop.html
-const onBeforeRender = (_e: RenderEventInterface) => {
-  const t = Date.now()
-  let mesh, ti
-  for (let i = 1; i <= n.value; i++) {
-    if (meshRefs.value?.[i]?.mesh) {
-      mesh = meshRefs.value[i].mesh
-      ti = t - i * 500
-      mesh.rotation.x = ti * 0.00015
-      mesh.rotation.y = ti * 0.0002
-      mesh.rotation.z = ti * 0.00017
+// useGameLoop is a optional helper to create a game loop with a fixed frame rate.
+const { loop, fps } = useGameLoop(
+  function ({ time }, delta) {
+    // Example from: https://troisjs.github.io/examples/loop.html
+    let mesh, ti
+    for (let i = 1; i <= n.value; i++) {
+      mesh = meshRefs.value?.[i]?.mesh
+      if (mesh) {
+        ti = time - i * 500
+        mesh.rotation.x = ti * 0.00015
+        mesh.rotation.y = ti * 0.0002
+        mesh.rotation.z = ti * 0.00017
+      }
     }
-  }
-}
+  },
+  144,
+  true
+)
 </script>
 
 <template>
-  <GridLayout rows="*" class="bg-base-200">
-    <NsRenderer @before-render="onBeforeRender" alpha>
+  <GridLayout rows="*, auto" class="bg-base-200">
+    <NsRenderer row="0" rowSpan="2" @before-render="loop" alpha orbit-ctrl>
       <Camera :position="{ z: 15 }" />
       <Scene>
         <AmbientLight color="#808080" />
@@ -106,6 +113,8 @@ const onBeforeRender = (_e: RenderEventInterface) => {
         </Torus>
       </Scene>
     </NsRenderer>
+
+    <Label row="1" :text="`FPS: ${fps}`" class="text-center" />
   </GridLayout>
 </template>
 
