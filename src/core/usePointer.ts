@@ -112,8 +112,8 @@ export default function usePointer(options: PointerConfigInterface): PointerInte
     }
 
     const rect = domElement.getBoundingClientRect()
-    position.x = x - rect.left
-    position.y = y - rect.top
+    position.x = x
+    position.y = y
     positionN.x = (position.x / rect.width) * 2 - 1
     positionN.y = -(position.y / rect.height) * 2 + 1
     raycaster.updatePosition(positionN)
@@ -198,8 +198,10 @@ export default function usePointer(options: PointerConfigInterface): PointerInte
         const event: PointerIntersectEventInterface = { type: 'click', component, intersect }
         onIntersectClick(event)
         component?.onClick?.(event)
+        console.log({ type: 'click', position, positionN, positionV3 });
       })
     }
+    
     onClick({ type: 'click', position, positionN, positionV3 })
   }
 
