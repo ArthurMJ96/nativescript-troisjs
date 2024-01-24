@@ -1,3 +1,12 @@
+
+[![NPM Package][npm]][npm-url]
+[![NPM Downloads][npm-downloads]][npmtrends-url]
+
+[npm]: https://img.shields.io/npm/v/nativescript-troisjs
+[npm-url]: https://www.npmjs.com/package/nativescript-troisjs
+[npm-downloads]: https://img.shields.io/npm/dw/nativescript-troisjs
+[npmtrends-url]: https://www.npmtrends.com/nativescript-troisjs
+
 # ✨ TroisJS + NativeScript-Vue3 ⚡
 
 I wanted something similar to *react-three-fiber* but for Nativescript + VueJS.
@@ -16,15 +25,6 @@ So I found TroisJS and adapted it.
     > Ex: <NsRenderer @before-render="fn" />
 + Added `useGameLoop` composable.
 + & more.
-<hr>
-
-[![NPM Package][npm]][npm-url]
-[![NPM Downloads][npm-downloads]][npmtrends-url]
-
-[npm]: https://img.shields.io/npm/v/nativescript-troisjs
-[npm-url]: https://www.npmjs.com/package/nativescript-troisjs
-[npm-downloads]: https://img.shields.io/npm/dw/nativescript-troisjs
-[npmtrends-url]: https://www.npmtrends.com/nativescript-troisjs
 
 ## Usage (NativeScript-Vue3)
 
@@ -119,7 +119,7 @@ const { loop, fps } = useGameLoop(
 </template>
 
 ```
-
+<hr>
 Read more on https://troisjs.github.io/guide/
 
 - 💻 Examples (wip) : https://troisjs.github.io/ ([sources](https://github.com/troisjs/troisjs.github.io/tree/master/src/components))
