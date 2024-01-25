@@ -161,10 +161,10 @@ export default defineComponent({
       type: Function as PropType<(e: RenderEventInterface) => void>,
       required: false,
     },
-    onResize: {
-      type: Function as PropType<(e: ResizeEventInterface) => void>,
-      required: false,
-    },
+    // onResize: {
+    //   type: Function as PropType<(e: ResizeEventInterface) => void>,
+    //   required: false,
+    // },
   },
   inheritAttrs: false,
   setup(props, { attrs }): RendererSetupInterface {
@@ -271,13 +271,13 @@ export default defineComponent({
         this.$pointer = this.three.pointer;
       }
 
-      // TODO : don't use config
-      this.three.config.onResize = (size) => {
-        this.onResize?.({ type: "resize", renderer: this, size });
-        this.resizeCallbacks.forEach((e) =>
-          e({ type: "resize", renderer: this, size })
-        );
-      };
+      // // TODO : don't use config
+      // this.three.config.onResize = (size) => {
+      //   this.onResize?.({ type: "resize", renderer: this, size });
+      //   this.resizeCallbacks.forEach((e) =>
+      //     e({ type: "resize", renderer: this, size })
+      //   );
+      // };
 
       if (this.shadow) {
         this.renderer.shadowMap.enabled = true;

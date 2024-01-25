@@ -36,6 +36,14 @@ export interface PointerPublicConfigInterface {
   onIntersectClick?: PointerIntersectCallbackType
 }
 
+export type ObjectPointerCallbacks = {
+  onPointerEnter?: PointerIntersectCallbackType,
+  onPointerOver?: PointerIntersectCallbackType,
+  onPointerMove?: PointerIntersectCallbackType,
+  onPointerLeave?: PointerIntersectCallbackType,
+  onClick?: PointerIntersectCallbackType,
+}
+
 export interface PointerConfigInterface extends PointerPublicConfigInterface {
   camera: Camera
   domElement: HTMLCanvasElement
@@ -198,7 +206,6 @@ export default function usePointer(options: PointerConfigInterface): PointerInte
         const event: PointerIntersectEventInterface = { type: 'click', component, intersect }
         onIntersectClick(event)
         component?.onClick?.(event)
-        console.log({ type: 'click', position, positionN, positionV3 });
       })
     }
     

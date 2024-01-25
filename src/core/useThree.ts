@@ -1,7 +1,7 @@
 import { Camera, Mesh, Object3D, OrthographicCamera, PerspectiveCamera, Scene, WebGLRenderer, WebGLRendererParameters } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import usePointer, { PointerConfigInterface, PointerPublicConfigInterface, PointerInterface } from './usePointer'
+import usePointer, { PointerConfigInterface, PointerPublicConfigInterface, PointerInterface, PointerIntersectCallbackType, ObjectPointerCallbacks } from './usePointer'
 
 export interface SizeInterface {
   width: number
@@ -26,6 +26,8 @@ export interface ThreeConfigInterface {
   [index:string]: any
 }
 
+export type IntersectObjectHandlers = ObjectPointerCallbacks
+
 export interface ThreeInterface {
   config: ThreeConfigInterface
   renderer: WebGLRenderer
@@ -42,10 +44,7 @@ export interface ThreeInterface {
   setSize(width: number, height: number): void
   addIntersectObject(
     o: Object3D | Mesh,
-    handlers?: Omit<
-      PointerPublicConfigInterface,
-      "intersectMode" | "intersectRecursive" | "touch" | "resetOnEnd"
-    >
+    handlers?: IntersectObjectHandlers
   ): void;
   removeIntersectObject(o: Object3D): void
 }
@@ -198,13 +197,7 @@ export default function useThree(params: ThreeConfigInterface): ThreeInterface {
   /**
    * add intersect object
    */
-  function addIntersectObject(
-    o: Object3D,
-    handlers: Omit<
-      PointerPublicConfigInterface,
-      "intersectMode" | "intersectRecursive" | "touch" | "resetOnEnd"
-    >
-  ) {
+  function addIntersectObject(o: Object3D, handlers?: IntersectObjectHandlers) {
     if (handlers) {
       Object.assign((o.userData.component ||= {}), handlers);
     }

@@ -15,13 +15,25 @@ import { PointerPublicConfigInterface } from "./usePointer";
 import Renderer, {
   type RendererInterface,
   type RenderEventInterface,
-  type ResizeEventInterface,
 } from "./Renderer";
 import { Screen } from "@nativescript/core/platform";
 import { useElementSize, ViewRef } from "@nativescript-use/vue";
 import type { Canvas } from "@nativescript/canvas";
 
 export type TCanvas = Canvas;
+
+export type Sizes = {
+  width: number;
+  height: number;
+  unscaled: {
+    width: number;
+    height: number;
+  };
+};
+
+export type NsRendererResizeEvent = {
+  renderer: RendererInterface;
+} & Sizes;
 
 const comp = defineComponent({
   props: {
@@ -66,10 +78,6 @@ const comp = defineComponent({
       type: Function as PropType<(e: RenderEventInterface) => void>,
       required: false,
     },
-    onResize: {
-      type: Function as PropType<(e: ResizeEventInterface) => void>,
-      required: false,
-    },
 
     /**
      * A number between 0 and 1 to scale the canvas resolution.
@@ -85,11 +93,7 @@ const comp = defineComponent({
   emits: {
     canvasReady: (canvas: TCanvas) => true,
     rendererReady: (renderer: RendererInterface) => true,
-    resize: (event: {
-      renderer: RendererInterface;
-      width: number;
-      height: number;
-    }) => true,
+    resize: (event: NsRendererResizeEvent) => true,
   },
 
   setup(props, { emit, expose, slots }) {
@@ -150,7 +154,7 @@ const comp = defineComponent({
     });
     const canvasComp = resolveComponent("canvas");
 
-    const { resize, ...rendererProps } = props;
+    const { resize, onResize, ...rendererProps } = props;
 
     return () =>
       h("ContentView", { ref: wrapper, onLoaded }, [
@@ -178,14 +182,7 @@ interface ExposedProps {
   new (): {
     readonly canvas: TCanvas;
     readonly renderer: RendererInterface;
-    readonly sizes: {
-      width: number;
-      height: number;
-      unscaled: {
-        width: number;
-        height: number;
-      };
-    };
+    readonly sizes: Sizes;
   };
 }
 
