@@ -42,7 +42,7 @@ export interface ThreeConfigInterface {
 }
 
 export type IntersectObjectOptions = ObjectPointerCallbacks & {
-  userData: {
+  userData?: {
     [key: string]: any;
   };
 };
@@ -125,11 +125,13 @@ export default function useThree(params: ThreeConfigInterface): ThreeInterface {
    * create WebGLRenderer
    */
   function createRenderer(): WebGLRenderer {
+    const context = config.canvas?.getContext("webgl2") || undefined;
     const renderer = new WebGLRenderer({
       canvas: config.canvas,
       antialias: config.antialias,
       alpha: config.alpha,
       ...config.params,
+      context,
     });
     renderer.autoClear = config.autoClear;
     return renderer;
