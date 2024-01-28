@@ -13,6 +13,6 @@ export { default as Raycaster } from "./Raycaster";
 
 export { default as CubeCamera } from "./CubeCamera";
 
-export type { ThreeInterface, IntersectObjectHandlers } from "./useThree";
+export type { ThreeInterface, IntersectObjectOptions } from "./useThree";
 export type { RendererPublicInterface } from "./Renderer";
 export type { Object3DPublicInterface } from "./Object3D";
