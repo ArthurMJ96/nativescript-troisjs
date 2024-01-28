@@ -17,7 +17,7 @@ import Renderer, {
   type RenderEventInterface,
 } from "./Renderer";
 import { Screen } from "@nativescript/core/platform";
-import { useElementSize, ViewRef } from "@nativescript-use/vue";
+import { CoreTypes, View } from "@nativescript/core";
 import type { Canvas } from "@nativescript/canvas";
 
 export type TCanvas = Canvas;
@@ -98,10 +98,12 @@ const comp = defineComponent({
 
   setup(props, { emit, expose, slots }) {
     const appReady = ref(false);
-    const wrapper = ref<ViewRef>(null!);
     const canvas = shallowRef<TCanvas>(null!);
     const renderer = ref<RendererInterface>(null!);
-    const { width, height } = useElementSize(wrapper);
+
+    const width = ref<CoreTypes.dip>(0);
+    const height = ref<CoreTypes.dip>(0);
+
     const sizes = computed(() => ({
       width: width.value * Screen.mainScreen.scale,
       height: height.value * Screen.mainScreen.scale,
@@ -110,22 +112,6 @@ const comp = defineComponent({
         height: height.value,
       },
     }));
-
-    function onCanvasReady(args: { object: TCanvas }) {
-      canvas.value = args.object;
-      emit("canvasReady", args.object);
-    }
-
-    function updateScale() {
-      const renderScale = Math.min(Math.max(props.resolutionScale, 0), 1);
-      const matrixScale = 1 / renderScale;
-      if (matrixScale >= 1) {
-        canvas.value?.nativeView?.setScaleX(matrixScale);
-        canvas.value?.nativeView?.setScaleY(matrixScale);
-      }
-      const { width, height } = sizes.value;
-      renderer.value?.three?.setSize(width * renderScale, height * renderScale);
-    }
 
     // Handle resolutionScale
     watchEffect(updateScale);
@@ -141,10 +127,39 @@ const comp = defineComponent({
       }
     });
 
-    function onLoaded() {
+    function updateScale() {
+      const renderScale = Math.min(Math.max(props.resolutionScale, 0), 1);
+      const matrixScale = 1 / renderScale;
+      if (matrixScale >= 1) {
+        canvas.value?.nativeView?.setScaleX(matrixScale);
+        canvas.value?.nativeView?.setScaleY(matrixScale);
+      }
+      const { width, height } = sizes.value;
+      renderer.value?.three?.setSize(width * renderScale, height * renderScale);
+    }
+
+    function updateSize(view: View) {
+      const size = view?.getActualSize();
+      if (size) {
+        width.value = size.width;
+        height.value = size.height;
+      }
+    }
+
+    function onWrapperLoaded({ object }: { object: View }) {
+      const layoutChanged = () => updateSize(object);
+      updateSize(object);
+      object.on(View.layoutChangedEvent, layoutChanged);
+      object.on(View.unloadedEvent, () => {
+        object.off(View.layoutChangedEvent, layoutChanged);
+      });
       nextTick(() => {
         appReady.value = true;
       });
+    }
+
+    function onCanvasReady(args: { object: TCanvas }) {
+      emit("canvasReady", (canvas.value = args.object));
     }
 
     expose({
@@ -157,7 +172,7 @@ const comp = defineComponent({
     const { resize, onResize, ...rendererProps } = props;
 
     return () =>
-      h("ContentView", { ref: wrapper, onLoaded }, [
+      h("ContentView", { onLoaded: onWrapperLoaded }, [
         appReady.value && h(canvasComp, { onReady: onCanvasReady }),
         canvas.value &&
           appReady.value &&

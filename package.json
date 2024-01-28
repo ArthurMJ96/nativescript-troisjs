@@ -1,6 +1,6 @@
 {
   "name": "nativescript-troisjs",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "scripts": {
     "dev": "vite",
     "types": "tsc",
@@ -8,10 +8,9 @@
     "rollup": "tsc && rollup -c"
   },
   "devDependencies": {
-    "@nativescript-use/vue": "^0.0.20",
-    "@nativescript/canvas": "2.0.0-alpha.48",
-    "@nativescript/canvas-polyfill": "2.0.0-alpha.48",
-    "@nativescript/core": "8.5.9",
+    "@nativescript/canvas": "^2.0.0-beta.0",
+    "@nativescript/canvas-polyfill": "^2.0.0-beta.0",
+    "@nativescript/core": "^8.6.2",
     "@nativescript/types": "^8.6.1",
     "@rollup/plugin-replace": "^3.0.0",
     "@types/three": "^0.138.0",
@@ -33,7 +32,7 @@
     "rollup-plugin-dts": "^4.0.0",
     "rollup-plugin-esbuild": "^4.1.0",
     "stats.js": "0.17.0",
-    "three": "^0.138.3",
+    "three": "^0.160.1",
     "typescript": "^4.1.5",
     "vite": "^2.6.13",
     "vue": "^3.4.15",
@@ -59,5 +58,9 @@
   "bugs": {
     "url": "https://github.com/ArthurMJ96/nativescript-troisjs/issues"
   },
-  "homepage": "https://github.com/ArthurMJ96/nativescript-troisjs"
+  "homepage": "https://github.com/ArthurMJ96/nativescript-troisjs",
+  "dependencies": {
+    "@nativescript/canvas-media": "^2.0.0-beta.0",
+    "@nativescript/canvas-three": "^2.0.0-beta.0"
+  }
 }

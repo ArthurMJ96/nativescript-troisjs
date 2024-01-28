@@ -29,7 +29,6 @@ const external = [
   "three/examples/jsm/shaders/FXAAShader.js",
   "three/examples/jsm/webxr/VRButton.js",
   "vue",
-  "@nativescript-use/vue",
   "@nativescript/core",
   "@nativescript/core/platform",
   "@nativescript/canvas",
